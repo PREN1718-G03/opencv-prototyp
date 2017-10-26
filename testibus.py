@@ -2,6 +2,9 @@
 from picamera.array import PiRGBArray
 from picamera import PiCamera
 import time
+import sys
+
+sys.path.append('/usr/local/lib/python2.7/dist-packages')
 import cv2
 
 # initialize the camera and grab a reference to the raw camera capture
