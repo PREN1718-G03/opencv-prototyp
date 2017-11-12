@@ -1,16 +1,12 @@
 # Imports
 import cv2
 import time
-import os
 from VideoStream import VideoStream
 
 vs = VideoStream().start()
 time.sleep(2.0)
 
 # Import files for face recognition
-
-print os.getcwd()
-
 cascPath = "haarcascade_frontalface_default.xml"
 faceCascade = cv2.CascadeClassifier(cascPath)
 
