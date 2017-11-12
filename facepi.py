@@ -2,7 +2,7 @@
 import cv2
 import time
 import os
-import VideoStream
+from VideoStream import VideoStream
 
 vs = VideoStream().start()
 time.sleep(2.0)
@@ -19,7 +19,6 @@ while True:
     frame = vs.read()
 
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-
     faces = faceCascade.detectMultiScale(
         gray,
         scaleFactor=1.1,

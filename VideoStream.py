@@ -1,8 +1,8 @@
 # Prepare the Raspberry Pi Camera
 # https://www.pyimagesearch.com/2016/01/04/unifying-picamera-and-cv2-videocapture-into-a-single-class-with-opencv/
 class VideoStream:
-    def __init__(self, src=0, resolution=(320, 240),
-                 framerate=32):
+    def __init__(self, src=0, resolution=(640, 480),
+                 framerate=24):
         from PiVideoStream import PiVideoStream
 
         # initialize the picamera stream and allow the camera
