@@ -23,22 +23,26 @@ while True:
     rectCount = 0
     for contour in contours:
         perimeter = cv2.arcLength(contour, True)
-        # Epsilon = Maximum Distance from contour to approximated contour; Usually 1-5% of ArcLength
+        # Epsilon = Maximum Distance from contour to approximated contour; Usually 1-5% of ArcLength, we're setting it to 15% :D
         epsilon = 0.15*perimeter
         approximatedContour = cv2.approxPolyDP(contour, epsilon, True)
 
         contourArea = cv2.contourArea(approximatedContour)
-        if len(approximatedContour) == 4 and contourArea>20.0:
+        if len(approximatedContour) == 4 and contourArea>50.0:
             rectCount += 1
+
             # Calculate the corner points of the rectangle
             cornerPoints = cv2.boxPoints(cv2.minAreaRect(approximatedContour))
+
             # Calculate the centroid from moments https://docs.opencv.org/trunk/dd/d49/tutorial_py_contour_features.html
             moments = cv2.moments(approximatedContour)
             cx = int(moments['m10']/moments['m00'])
             cy = int(moments['m01']/moments['m00'])
             coordinates = (cx,cy)
-            print coordinates
-            cv2.drawContours(frame, [approximatedContour], -1, (0, 0, 255), 3)
+            print 'Rectangle ' + str(rectCount) + ': ' + str(coordinates)
+
+            cv2.drawMarker(frame, coordinates, (170+rectCount*20,0,170+rectCount*20), 1, 6, 3)
+            cv2.drawContours(frame, [approximatedContour], -1, (0, 255, 255), 1)
 
             cv2.putText(frame, str(rectCount), tuple(cornerPoints[0]), cv2.FONT_HERSHEY_PLAIN, 2 , (0,0,200))
     if cv2.waitKey(1) & 0xFF == ord('q'):
