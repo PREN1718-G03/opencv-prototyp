@@ -1,10 +1,20 @@
 import cv2
 import copy
+import time
+from VideoStream import VideoStream
 
-cam = cv2.VideoCapture(1)
+# Comment these two lines if you want to use the internal camera
+cam  = VideoStream().start()
+# Let the camera sensor warm up
+time.sleep(2.0)
+
+# Uncomment this line to use the internal camera
+# cam = cv2.VideoCapture(1)
+
 
 
 def recogniseTarget(coordinateArray):
+    # How near the two middle points should be in pixels
     ERRMAX = 4
     match = 0
     found = False
@@ -18,20 +28,23 @@ def recogniseTarget(coordinateArray):
         else:
             match = 0
         comparedCoordinates = coordinates
-        if match > 4:
+        if match > 2:
             found = True
             targetCoordinates = coordinates
     return targetCoordinates, found
 
 
 while True:
-    ret, frame = cam.read()
+    # If local camera uncomment this
+    # ret, frame = cam.read()
+    frame = cam.read()
 
     # Change the picture to grayscale
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
     # Calculate the binary threshold -> Everything lower than threshold turns black, everything over turns white
-    retthresh, threshold = cv2.threshold(gray, 75, 255, cv2.THRESH_BINARY)
+    retthresh, threshold = cv2.threshold(gray, 150, 255, cv2.THRESH_BINARY)
+    # Show the calculated threshold
     cv2.imshow('Threshold', threshold)
 
     # Find the contours, RETR_TREE preserves the inner contours and doesn't limit itself to the outermost one like RETR_EXTERNAL
@@ -40,6 +53,7 @@ while True:
     # I don't want a reference to the frame object, I want a copy
     cntImage = copy.copy(frame)
     cv2.drawContours(cntImage, contours, -1, (0, 255, 0), 2)
+    # Show the picture of the contours
     cv2.imshow('Contours', cntImage)
 
     # I want to enumerate the found rectangles
@@ -80,6 +94,7 @@ while True:
 
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
+    # Show the recognised rectangles
     cv2.imshow('Rectangles', frame)
 cam.release()
 cv2.destroyAllWindows()
