@@ -1,28 +1,27 @@
 import cv2
 import copy
 
-cam = cv2.VideoCapture(0)
+cam = cv2.VideoCapture(1)
 
 
 def recogniseTarget(coordinateArray):
     ERRMAX = 4
-    match = 0;
+    match = 0
     found = False
-
+    targetCoordinates = (None, None)
     comparedCoordinates = (0, 0)
     for coordinates in coordinateArray:
         differenceX = abs(comparedCoordinates[0]-coordinates[0])
         differenceY = abs(comparedCoordinates[1]-coordinates[1])
         if differenceX < ERRMAX and differenceY < ERRMAX:
             match +=1
-            print str(comparedCoordinates) + ' '+ str(coordinates)
         else:
             match = 0
         comparedCoordinates = coordinates
-
-    if match > 4:
-        found = True
-    return found
+        if match > 4:
+            found = True
+            targetCoordinates = coordinates
+    return targetCoordinates, found
 
 
 while True:
@@ -73,7 +72,11 @@ while True:
             cv2.putText(frame, str(rectCount), tuple(cornerPoints[0]), cv2.FONT_HERSHEY_PLAIN, 2, (0, 0, 200))
 
         print coordinateArray
-        print recogniseTarget(coordinateArray)
+        t,f = recogniseTarget(coordinateArray)
+        print f
+
+        # if len(approximatedContour) == 8 and contourArea > 50.0:
+
 
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
