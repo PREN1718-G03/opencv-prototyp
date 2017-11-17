@@ -43,7 +43,7 @@ while True:
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
     # Calculate the binary threshold -> Everything lower than threshold turns black, everything over turns white
-    retthresh, threshold = cv2.threshold(gray, 150, 255, cv2.THRESH_BINARY)
+    retthresh, threshold = cv2.threshold(gray, 100, 255, cv2.THRESH_BINARY)
     # Show the calculated threshold
     cv2.imshow('Threshold', threshold)
 
@@ -52,6 +52,9 @@ while True:
 
     # I don't want a reference to the frame object, I want a copy
     cntImage = copy.copy(frame)
+
+    crnImage = copy.copy(frame)
+
     cv2.drawContours(cntImage, contours, -1, (0, 255, 0), 2)
     # Show the picture of the contours
     cv2.imshow('Contours', cntImage)
@@ -89,8 +92,7 @@ while True:
         t,f = recogniseTarget(coordinateArray)
         print f
 
-        # if len(approximatedContour) == 8 and contourArea > 50.0:
-
+    # corners = cv2.cornerHarris(crnImage,)
 
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
