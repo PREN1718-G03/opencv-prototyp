@@ -1,6 +1,7 @@
 import cv2
 import copy
 import time
+import numpy as np
 from VideoStream import VideoStream
 
 # Comment these two lines if you want to use the internal camera
@@ -35,10 +36,23 @@ while True:
     # Change the picture to grayscale
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
+    width, height = gray.shape
+    #normalized = np.zeros((width, height))
+
+    # I suspect it helps, but I'm not sure ^^'
+    #normalized = cv2.normalize(gray, normalized, 50, 255, cv2.NORM_MINMAX)
+
+    # https://opencv-python-tutroals.readthedocs.io/en/latest/py_tutorials/py_imgproc/py_histograms/py_histogram_equalization/py_histogram_equalization.html
+    clahe = cv2.createCLAHE(clipLimit=4.0,tileGridSize=(8,8))
+    normalized = clahe.apply(gray)
+
+    cv2.imshow('Normalized', normalized)
+
     # Calculate the binary threshold -> Everything lower than threshold turns black, everything over turns white
-    retthresh, threshold = cv2.threshold(gray, 100, 255, cv2.THRESH_BINARY)
+    retthresh, threshold = cv2.threshold(normalized, 150, 255, cv2.THRESH_BINARY)
+
     # Show the calculated threshold
-    # cv2.imshow('Threshold', threshold)
+    cv2.imshow('Threshold', threshold)
 
     # Find the contours, RETR_TREE preserves the inner contours and doesn't limit itself to the outermost one like RETR_EXTERNAL
     imageContours, contours, hierarchy = cv2.findContours(threshold, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
@@ -86,6 +100,6 @@ while True:
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
     # Show the recognised rectangles
-    cv2.imshow('Rectangles', frame)
+    # cv2.imshow('Rectangles', frame)
 cam.release()
 cv2.destroyAllWindows()
